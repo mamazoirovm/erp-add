@@ -3,20 +3,30 @@ import MyInputs from "../layout/MyInput";
 import MySelect from "../layout/MySelect";
 import Buttons from "../layout/Buttons";
 import "../index.css";
-import { Button, Drawer, Flex, Form, Input, Table } from "antd";
-import { PlusCircleFilled } from "@ant-design/icons";
+import { Button, Drawer, Flex, Form, Input, Space, Table } from "antd";
+import {
+  PlusCircleFilled,
+  DeleteFilled,
+  EditOutlined,
+} from "@ant-design/icons";
 import useTeacher from "../hooks/useTeacher";
 import { useForm } from "antd/es/form/Form";
 const Teachers = () => {
-  const [open, setOpen] = useState(false);
-  const onFinish = (values) => {
-    addTeacher(values)
-  };
+    const [editing, setEditing] = useState(null);
+    const onFinish = (values) => {
+        if (editing) {
+          updateTeacher(editing.id, values);
+        } else {
+          addTeacher(values);
+        }
+        console.log(addTeacher);
+      };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const {loading, data, addTeacher} = useTeacher()
+  const { loading, data, addTeacher, open, setOpen, deleteTeach, updateTeacher } =
+    useTeacher();
   const columns = [
     {
       title: "Ism",
@@ -28,18 +38,39 @@ const Teachers = () => {
       title: "Familya",
       dataIndex: "lastName",
       key: "lastName",
-      width: 420,
+      width: 180,
     },
-  
+    {
+      title: "Actions",
+      key: "actions",
+      width: 70,
+      render: (record) => (
+        <Space>
+          <Button
+            onClick={() => deleteTeach(record.id)}
+            type="primary"
+            danger
+            icon={<DeleteFilled />}
+          ></Button>
+          <Button
+            onClick={() => {
+              setOpen(true);
+              setEditing(record);
+            }}
+            type="primary"
+            icon={<EditOutlined />}
+          ></Button>
+        </Space>
+      ),
+    },
   ];
-  const form = useForm()
-  console.log(data);
+  const [form] = useForm();
 
-  useEffect(()=> {
+  useEffect(() => {
     if (!open) {
-     form.resetFields();
+      form.resetFields();
     }
-  },[open])
+  }, [open]);
   return (
     <div>
       <Flex justify="space-between">
@@ -55,7 +86,12 @@ const Teachers = () => {
         <MyInputs />
         <Buttons />
       </div>
-      <Table loading={loading} rowKey="id" columns={columns} dataSource={data}/>
+      <Table
+        loading={loading}
+        rowKey="id"
+        columns={columns}
+        dataSource={data}
+      />
       <Drawer
         onClose={() => setOpen(false)}
         title="Add new Teacher"
@@ -63,29 +99,39 @@ const Teachers = () => {
         placement="left"
       >
         <Form
-        form={form}
+          form={form}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           layout="vertical"
           name="add_teacher"
         >
-          <Form.Item rules={[
-                {
-                  required: true,
-                  message: "Iltimos ismingizni kiriting",
-                },
-              ]} required label="Ism kiriting" name={"firstName"}>
-            <Input   />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Iltimos ismingizni kiriting",
+              },
+            ]}
+            required
+            label="Ism kiriting"
+            name={"firstName"}
+            initialValue={editing ? editing.firstName : ""}
+          >
+            <Input />
           </Form.Item>
-          <Form.Item    rules={[
-                {
-                  required: true,
-                  message: "Iltimos familyangizni kiriting",
-                },
-              ]} required label="Familiya kiriting" name={"lastName"}>
-            <Input
-           
-            />
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Iltimos familyangizni kiriting",
+              },
+            ]}
+            required
+            label="Familiya kiriting"
+            name={"lastName"}
+            initialValue={editing ? editing.lastName : ""}
+          >
+            <Input />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

@@ -2,8 +2,8 @@
 import React from 'react'
 import { Menu } from 'antd'
 import {
-    UserOutlined,
-   GroupOutlined
+    UsergroupAddOutlined,
+    ReadOutlined
   } from "@ant-design/icons";
 import {  NavLink, useLocation } from 'react-router-dom';
 const MyMenu = () => {
@@ -12,12 +12,12 @@ const MyMenu = () => {
         {
             path: "/teachers",
             label: "Teachers",
-            icon: <UserOutlined></UserOutlined>
+            icon: <UsergroupAddOutlined/>
         },
         {
             path: "/classes",
             label: "Classes",
-            icon: <GroupOutlined></GroupOutlined>
+            icon: <ReadOutlined/>
         }
     ]
   return (
