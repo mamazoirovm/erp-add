@@ -12,21 +12,33 @@ import {
 import useTeacher from "../hooks/useTeacher";
 import { useForm } from "antd/es/form/Form";
 const Teachers = () => {
-    const [editing, setEditing] = useState(null);
-    const onFinish = (values) => {
-        if (editing) {
-          updateTeacher(editing.id, values);
-        } else {
-          addTeacher(values);
-        }
-        console.log(addTeacher);
-      };
+  const handleEdit = (record) => {
+    setEditing(record);
+    setOpen(true);
+  };
+  const onFinish = (values) => {
+    if (editing) {
+      updateTeacher(editing.id, values);
+    } else {
+      addTeacher(values);
+    }
+    console.log(addTeacher);
+  };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const { loading, data, addTeacher, open, setOpen, deleteTeach, updateTeacher } =
-    useTeacher();
+  const {
+    loading,
+    data,
+    addTeacher,
+    open,
+    setOpen,
+    deleteTeach,
+    editing,
+    setEditing,
+    updateTeacher
+  } = useTeacher();
   const columns = [
     {
       title: "Ism",
@@ -54,6 +66,7 @@ const Teachers = () => {
           ></Button>
           <Button
             onClick={() => {
+              handleEdit(record);
               setOpen(true);
               setEditing(record);
             }}
@@ -69,6 +82,12 @@ const Teachers = () => {
   useEffect(() => {
     if (!open) {
       form.resetFields();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (open && editing) {
+      form.setFieldsValue(editing);
     }
   }, [open]);
   return (
@@ -115,7 +134,6 @@ const Teachers = () => {
             required
             label="Ism kiriting"
             name={"firstName"}
-            initialValue={editing ? editing.firstName : ""}
           >
             <Input />
           </Form.Item>
@@ -129,13 +147,12 @@ const Teachers = () => {
             required
             label="Familiya kiriting"
             name={"lastName"}
-            initialValue={editing ? editing.lastName : ""}
           >
             <Input />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Saqlash
+            <Button loading={loading} type="primary" htmlType="submit">
+              {editing ? "Edit" : "Saqlash"}
             </Button>
           </Form.Item>
         </Form>

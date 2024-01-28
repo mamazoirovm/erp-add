@@ -24,8 +24,9 @@ const Root = () => {
     <Layout style={{ minHeight: "100%", background: "#00152a" }}>
          <Sider
         trigger={null}
-        style={{ color: "#fff", width: 400, }}
+        style={{ color: "#fff", }}
         collapsible
+        width={250}
         collapsed={collapsed}
       >
         <div className="demo-logo">

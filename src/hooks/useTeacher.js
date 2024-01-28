@@ -15,7 +15,7 @@ export default () => {
   const [loading, setloading] = useState(false);
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
-  
+  const [editing, setEditing] = useState(null);
   useEffect(() => {
     getTeachers();
   }, []);
@@ -52,11 +52,12 @@ export default () => {
     setloading(false);
   }
 
-  async function updateTeacher(id, updatedTeacher) {
+  async function updateTeacher(id, values) {
     try {
       setloading(true);
-      await updateDoc(doc(db, "teachers", id), updatedTeacher);
-      setData(data.map((d) => (d.id === id ? updatedTeacher : d)));
+      const docRef = doc(db, "teachers", id)
+      await updateDoc(docRef, values);
+      setData(data.map((d) => (d.id === id ? {...values,  id} : d)));
       message.success("Muvaffaqiyatli yangilandi");
       setOpen(false);
       setEditing(null); // reset editing state after updating
@@ -73,6 +74,6 @@ export default () => {
     deleteTeach,
     open,
     setOpen,
-    updateTeacher
+    editing, setEditing,updateTeacher
   };
 };
