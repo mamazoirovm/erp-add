@@ -13,15 +13,15 @@ const forms = [
     name: "name",
   },
 ];
-const Classes = () => {
+const Subject = () => {
   return (
     <CrudPage
       pageColumns={columns}
-      collectionName={"classes"}
-      title="Class"
+      collectionName={"subjects"}
+      title="Subject"
       pageForm={forms}
     ></CrudPage>
   );
 };
 
-export default Classes;
+export default Subject;

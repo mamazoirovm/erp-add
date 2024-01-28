@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { db } from "../firebase/firabase";
 import { message } from "antd";
 
-export default () => {
+export default collectionName => {
   const [loading, setloading] = useState(false);
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export default () => {
   }, []);
   async function getTeachers() {
     setloading(true);
-    const col = collection(db, "teachers");
+    const col = collection(db, collectionName);
     const snapShot = await getDocs(col);
 
     setData(snapShot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -31,7 +31,7 @@ export default () => {
   async function addTeacher(teacher) {
     try {
       setloading(true);
-      const docRef = await addDoc(collection(db, "teachers"), teacher);
+      const docRef = await addDoc(collection(db, collectionName), teacher);
       setData([...data, { ...teacher, id: docRef.id }]);
       message.success("Muvaffaqiyatli qo'shildi");
       setOpen(false);
@@ -44,7 +44,7 @@ export default () => {
   async function deleteTeach(id) {
     try {
       setloading(true);
-      await deleteDoc(doc(db, "teachers", id));
+      await deleteDoc(doc(db, collectionName, id));
       setData(data.filter((d) => d.id != id));
     } catch (error) {
       console.log(error);
@@ -55,9 +55,9 @@ export default () => {
   async function updateTeacher(id, values) {
     try {
       setloading(true);
-      const docRef = doc(db, "teachers", id)
+      const docRef = doc(db, collectionName, id);
       await updateDoc(docRef, values);
-      setData(data.map((d) => (d.id === id ? {...values,  id} : d)));
+      setData(data.map((d) => (d.id === id ? { ...values, id } : d)));
       message.success("Muvaffaqiyatli yangilandi");
       setOpen(false);
       setEditing(null); // reset editing state after updating
@@ -66,7 +66,7 @@ export default () => {
     }
     setloading(false);
   }
- 
+
   return {
     loading,
     data,
@@ -74,6 +74,8 @@ export default () => {
     deleteTeach,
     open,
     setOpen,
-    editing, setEditing,updateTeacher
+    editing,
+    setEditing,
+    updateTeacher,
   };
 };

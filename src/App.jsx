@@ -5,6 +5,8 @@ import { useState } from "react";
 import { ConfigProvider } from "antd";
 import Teachers from "./pages/Teachers";
 import Classes from "./pages/Classes";
+import Subject from "./pages/Subject";
+import Timetable from "./pages/Timetable";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -17,6 +19,14 @@ const router = createBrowserRouter([
       {
         path: 'classes',
         element: <Classes/>
+      },
+      {
+        path: 'subject',
+        element: <Subject/>
+      },
+      {
+        path: 'timetable',
+        element: <Timetable/>
       }
     ]
   },
